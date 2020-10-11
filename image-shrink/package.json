@@ -1,0 +1,22 @@
+{
+  "name": "image-shrink",
+  "version": "1.0.0",
+  "description": "App to optimize images",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kblovett/electron.git"
+  },
+  "author": "Kolin Lovett",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kblovett/electron/issues"
+  },
+  "homepage": "https://github.com/kblovett/electron#readme",
+  "devDependencies": {
+    "electron": "^10.1.3"
+  }
+}
