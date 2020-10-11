@@ -1,4 +1,6 @@
 ## git
 /.git
-/node_modules
-.env
+
+## image-shrink
+image-shrink/node_modules
+image-shrink/.env
