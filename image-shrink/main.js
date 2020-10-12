@@ -1,4 +1,10 @@
-const { app, BrowserWindow, Menu, globalShortcut } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  globalShortcut,
+  contextBridge,
+} = require('electron');
 const os = require('os');
 
 // set env
@@ -18,16 +24,21 @@ let aboutWindow;
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     title: 'ImageShrink',
-    width: 500,
+    width: isDev ? 815 : 500,
     height: 600,
     icon: `${__dirname}/assets/icons/Icon_256x256.png`,
     resizable: isDev,
     backgroundColor: 'white',
     webPreferences: {
       worldSafeExecuteJavaScript: true,
-      contextIsolation: true,
+      contextIsolation: false,
+      nodeIntegration: true,
     },
   });
+
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 
   // mainWindow.loadURL(`file://${__dirname}/app/index.html`);
   mainWindow.loadFile(`${__dirname}/app/index.html`);
@@ -41,10 +52,10 @@ function createAboutWindow() {
     icon: `${__dirname}/assets/icons/Icon_256x256.png`,
     resizable: false,
     backgroundColor: 'white',
-    webPreferences: {
-      worldSafeExecuteJavaScript: true,
-      contextIsolation: true,
-    },
+  });
+
+  contextBridge.exposeInMainWorld('app', {
+    webPreferences: { nodeIntegration: true },
   });
 
   aboutWindow.loadFile(`${__dirname}/app/about.html`);
