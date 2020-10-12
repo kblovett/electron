@@ -12,17 +12,19 @@ const imagemin = require('imagemin');
 const imageminMozjpeg = require('imagemin-mozjpeg');
 const imageminPngquant = require('imagemin-pngquant');
 const slash = require('slash');
+const log = require('electron-log');
+log.transports.file.level = 'info';
+log.transports.file.file = __dirname + '.log';
 
 // set env
 const dev = 'development';
 const prod = 'production';
-process.env.NODE_ENV = dev;
+process.env.NODE_ENV = prod;
 
 const isDev = process.env.NODE_ENV !== prod ? true : false;
 const isMac = os.platform() === 'darwin' ? true : false;
 const isTux = os.platform() === 'linux' ? true : false;
 const isWin = os.platform() === 'win32' ? true : false;
-console.log(isDev, isMac, isTux, isWin);
 
 let mainWindow;
 let aboutWindow;
@@ -141,11 +143,11 @@ async function shrinkImage({ imgPath, quality, destination }) {
         imageminPngquant({ quality: [pngQuality, pngQuality] }),
       ],
     });
-    console.log(files);
+    log.info(`\nIN: ${imgPath}\nOUT: ${destination}\nQUALITY: ${quality}%\n`);
     // shell.openPath(destination);
     mainWindow.webContents.send('image:done');
   } catch (err) {
-    console.error(err.message);
+    log.error(err);
   }
 }
 
