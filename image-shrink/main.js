@@ -14,7 +14,7 @@ const imageminPngquant = require('imagemin-pngquant');
 const slash = require('slash');
 const log = require('electron-log');
 log.transports.file.level = 'info';
-log.transports.file.file = __dirname + '.log';
+log.transports.file.file = `${__dirname}/${app.name}` + '.log';
 
 // set env
 const dev = 'development';

@@ -4,4 +4,7 @@
 ## image-shrink
 image-shrink/node_modules
 image-shrink/.env
-image-shrink.log
+image-shrink/image-shrink.log
+
+## realease packages
+image-shrink/release-builds
