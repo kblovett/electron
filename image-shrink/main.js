@@ -3,7 +3,7 @@ const {
   BrowserWindow,
   Menu,
   globalShortcut,
-  contextBridge,
+  ipcMain,
 } = require('electron');
 const os = require('os');
 
@@ -52,10 +52,6 @@ function createAboutWindow() {
     icon: `${__dirname}/assets/icons/Icon_256x256.png`,
     resizable: false,
     backgroundColor: 'white',
-  });
-
-  contextBridge.exposeInMainWorld('app', {
-    webPreferences: { nodeIntegration: true },
   });
 
   aboutWindow.loadFile(`${__dirname}/app/about.html`);
@@ -123,6 +119,10 @@ const menu = [
       : []),
   },
 ];
+
+ipcMain.on('image:minimize', (e, options) => {
+  console.log(options);
+});
 
 app.on('window-all-closed', () => {
   if (!isMac) {
