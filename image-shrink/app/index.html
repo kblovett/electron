@@ -40,23 +40,26 @@
         <input type="submit" value="resize" class="btn black" />
       </form>
       <div class="card output">
-        <div class="card-content">
-          Output Path: <span id="output-path"></span>
-        </div>
+        <div class="btn" onclick="{openOutputFolder()}">open output folder</div>
       </div>
     </div>
     <script src="js/materialize.min.js"></script>
     <script>
       const path = require('path');
       const os = require('os');
-      const { ipcRenderer } = require('electron');
+      const { ipcRenderer, shell } = require('electron');
 
       const form = document.getElementById('image-form');
       const slider = document.getElementById('slider');
       const img = document.getElementById('img');
-      const outputPath = document.getElementById('output-path');
 
-      outputPath.innerText = path.join(os.homedir(), 'image-shrink');
+      // const outputPath = document.getElementById('output-path');
+      // outputPath.innerText = path.join(os.homedir(), 'image-shrink');
+
+      function openOutputFolder() {
+        const outputPath = path.join(os.homedir(), 'image-shrink');
+        shell.openPath(outputPath);
+      }
 
       // onSubmit
       form.addEventListener('submit', (e) => {
@@ -67,6 +70,13 @@
         ipcRenderer.send('image:minimize', {
           imgPath,
           quality,
+        });
+      });
+
+      // On done
+      ipcRenderer.on('image:done', () => {
+        M.toast({
+          html: `Image resized to ${slider.value}% quality`,
         });
       });
     </script>
