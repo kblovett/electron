@@ -13,6 +13,7 @@ const isWin = os.platform() === 'win32' ? true : false;
 console.log(isDev, isMac, isTux, isWin);
 
 let mainWindow;
+let aboutWindow;
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -32,40 +33,83 @@ function createMainWindow() {
   mainWindow.loadFile(`${__dirname}/app/index.html`);
 }
 
+function createAboutWindow() {
+  aboutWindow = new BrowserWindow({
+    title: 'About ImageShrink',
+    width: 300,
+    height: 400,
+    icon: `${__dirname}/assets/icons/Icon_256x256.png`,
+    resizable: false,
+    backgroundColor: 'white',
+    webPreferences: {
+      worldSafeExecuteJavaScript: true,
+      contextIsolation: true,
+    },
+  });
+
+  aboutWindow.loadFile(`${__dirname}/app/about.html`);
+}
+
 app.on('ready', () => {
   createMainWindow();
 
   const mainMenu = Menu.buildFromTemplate(menu);
   Menu.setApplicationMenu(mainMenu);
   globalShortcut.register('CmdOrCtrl+R', () => mainWindow.reload());
-  globalShortcut.register(isMac ? 'Alt+Cmd+I' : 'Ctrl+Shift+I', () =>
-    mainWindow.toggleDevTools()
-  );
 
   mainWindow.on('closed', () => (mainWindow = null));
 });
 
 const menu = [
-  ...(isMac ? [{ role: 'appMenu' }] : []),
+  ...(isMac
+    ? [
+        {
+          label: app.name,
+          submenu: [
+            {
+              label: 'About',
+              click: createAboutWindow(),
+            },
+          ],
+        },
+      ]
+    : []),
   {
-    label: 'File',
-    submenu: [
-      {
-        label: 'Quit',
-        accelerator: 'CmdOrCtrl+W',
-        click: () => app.quit(),
-      },
-    ],
+    role: 'fileMenu',
   },
+  ...(isDev
+    ? [
+        {
+          label: 'Developer',
+          submenu: [
+            {
+              role: 'reload',
+            },
+            {
+              role: 'forcereload',
+            },
+            {
+              type: 'separator',
+            },
+            {
+              role: 'toggledevtools',
+            },
+          ],
+        },
+      ]
+    : []),
   {
-    label: 'View',
-    submenu: [
-      {
-        label: 'Reload',
-        accelerator: 'CmdOrCtrl+R',
-        click: () => mainWindow.reload(),
-      },
-    ],
+    role: 'help',
+    ...(!isMac
+      ? {
+          submenu: [
+            {
+              label: 'About ImageShrink',
+              click: () => createAboutWindow(),
+            },
+          ],
+        }
+      : []),
   },
 ];
 
